@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace EqualityComparer
 {
@@ -73,6 +74,11 @@ namespace EqualityComparer
       return new GenericEqualityComparer<T>((x, y) => MemberComparer.Equal(x, y));
     }
 
+    public static GenericEqualityComparer<T> ByAllMembers(out Dictionary<string, string> differences)
+    {
+      return ByAllMembersImpl(new IEqualityComparer[] {}, out differences);
+    }
+
     /// <summary>
     /// Shortcut method to get a simple generic IEqualityComparer{T} where the comparison is by all properties and fields on the instance,
     /// with user defined overrides available on specific encountered types.
@@ -85,5 +91,23 @@ namespace EqualityComparer
     {
       return new GenericEqualityComparer<T>((x, y) => MemberComparer.Equal(x, y, customComparers));
     }
+
+    public static GenericEqualityComparer<T> ByAllMembers(IEnumerable<IEqualityComparer> customComparers, out Dictionary<string, string> differences)
+    {
+      return ByAllMembersImpl(customComparers, out differences);
+    }
+
+    internal static GenericEqualityComparer<T> ByAllMembersImpl(IEnumerable<IEqualityComparer> customComparers, out Dictionary<string, string> differences)
+    {
+      differences = new Dictionary<string,string>();
+      var closureDifferences = differences;
+
+      return new GenericEqualityComparer<T>((x, y) =>
+      {
+        var diffs = MemberComparer.Differences(x, y, customComparers);
+        closureDifferences = closureDifferences.Union(diffs).ToDictionary(pair => pair.Key, pair => pair.Value);
+        return (diffs.Count == 0);
+      });
+    } 
   }
 }
