@@ -116,7 +116,7 @@ ByAllMembers also has an overload that lets you specify comparers to use when a 
 
 ## Similar Projects
 
-* [AutoFixture](http://autofixture.codeplex.com/) includes a library called Ploeh.SemanticComparison .  I haven't checked out all the details, but it does pack a Fluent interface.
+* [AutoFixture](https://github.com/AutoFixture/AutoFixture) includes a library called Ploeh.SemanticComparison .  I haven't checked out all the details, but it does pack a Fluent interface.
 * [AnonymousComparer](http://linqcomparer.codeplex.com/) - the AnonymousComparer looks very similar to the GenericEqualityComparer class in our library, except for some syntactical differences.  It doesn't look like there are options to override the behavior of comparisons either.
 * [System.DataStructures.FuncComparer](http://adjunct.codeplex.com/) - looks like a basic implementation of a Func<T,T,bool> IEqualityComparer.
 
